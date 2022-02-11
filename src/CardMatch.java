@@ -70,7 +70,7 @@ public class CardMatch extends JFrame
                 button.addActionListener(this);
                 buttons.add(button);
                 // change index in accordance to suit
-                if (i == 13 || i == 26 || i == 39){
+                if (i == 14 || i == 27 || i == 40){
                     whichSuit++;
                 }
                 // initialize cardNames and buttons Mathced
