@@ -30,11 +30,11 @@ public class CardMatch extends JFrame
     private JPanel messageLayout = new JPanel();
 
     // text for displaying score
-    private JLabel score = new JLabel("Score: 0");
+    private JLabel score = new JLabel(" | Score: 0");
     // number of GUESSES?
-    private JLabel showGuesses = new JLabel("Guesses: 0");
+    private JLabel showGuesses = new JLabel(" | Guesses: 0");
     // display time elapsed
-    private JLabel timeElapsed = new JLabel("Time Elapsed: 0");
+    private JLabel timeElapsed = new JLabel(" | Time Elapsed: 0");
     // End Game Message
     private JLabel message = new JLabel(" ");
 
@@ -54,7 +54,7 @@ public class CardMatch extends JFrame
         message.setText("");
         score.setText("Score: " + matches);
         guesses = 0;
-        showGuesses.setText("Guesses: " + guesses);
+        showGuesses.setText(" | Guesses: " + guesses);
 
         removeMatches();
         enableButtons();
@@ -202,6 +202,7 @@ public class CardMatch extends JFrame
 
         }
         else if (e.getSource() == giveUpButton){ // give up
+            disableButtons(-1, -1);
             gameOver();
         }
         else { // a card is being clicked
@@ -209,7 +210,6 @@ public class CardMatch extends JFrame
             for (int i = 0 ; i < buttons.size() ; i++){
                 if (e.getSource() == buttons.get(i) && i != lastGuess){
 
-                    showGuesses.setText("Guesses: " + guesses);
                     displayCard(i);// show card
                     if (lastGuess != -1 ){ // check to see if there is a previous guess in queue
                         guesses += 1;
@@ -223,6 +223,7 @@ public class CardMatch extends JFrame
                         else{ // If they don't share the same chars, they're not a match
                             System.out.println("Not a Match!");
                             disableButtons(i, lastGuess);
+                            giveUpButton.setEnabled(false);
                             currGuess = i;
                             flipTimer.start();
                         }
@@ -241,7 +242,7 @@ public class CardMatch extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 time += 1;
-                timeElapsed.setText("Time Elapsed: " + time);
+                timeElapsed.setText(" | Time Elapsed: " + time);
                 repaint();
             }
         }
@@ -256,6 +257,7 @@ public class CardMatch extends JFrame
                 flipTimer.stop();
                 lastGuess = -1;
                 enableButtons();
+                giveUpButton.setEnabled(true);
             }
         }
         );
@@ -271,7 +273,7 @@ public class CardMatch extends JFrame
         // encode which buttons have been matched
         buttonsMatched[i] = true;
         buttonsMatched[lastGuess] = true;
-        score.setText("Score: " + matches);
+        score.setText(" | Score: " + matches);
         lastGuess = -1;
         if (matches == 26){
             gameOver();
@@ -281,18 +283,19 @@ public class CardMatch extends JFrame
         elapsedTimer.stop();
         Container c = getContentPane();
         messageLayout.setSize(1000, 300);
-        if (matches == 26){
-            c.remove(cardLayout);
-            message.setText("You Won! Your Time was: " + time +  "... Reset to play again.");
+        if (matches == 0){
+            message.setText("| You Won! Your Time was: " + time +  ".  |  Good job!");
+            showAllCards();
             if (!msgShown) {
                 messageLayout.add(message);
                 msgShown = true;
             }
+            resetButton.setVisible(false);
         }
         else{
             disableButtons(-1, -1);
             showAllCards();
-            message.setText("You lost. Try again by clicking 'Reset'");
+            message.setText("| You lost. Try again by clicking 'Reset' | ");
             if (!msgShown) {
                 messageLayout.add(message);
                 msgShown = true;
